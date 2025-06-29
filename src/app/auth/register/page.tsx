@@ -1,15 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EyeOff, Eye, ChevronLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      router.replace("/profile/create-profile");
+    }
+  }, []);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,12 +44,14 @@ export default function Register() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message || "Registrasi gagal");
+        alert(data.message);
         return;
       }
+      
+      localStorage.setItem("token", data.access_token);
 
-      alert("Registrasi berhasil!");
-      window.location.href = "/auth/login";
+      alert(data.message);
+      window.location.href = "/profile/create-profile";
     } catch (err) {
       console.error(err);
       alert("Terjadi kesalahan saat registrasi.");
@@ -49,7 +60,6 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(200%_200%_at_90%_10%,_#1F4247,_#0D1D23,_#09141A)]  text-white px-4 ">
-   
       <div className="w-full max-w-md space-y-6 pt-24">
         <h1 className="text-3xl font-bold ml-4">Register</h1>
 

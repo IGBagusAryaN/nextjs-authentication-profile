@@ -1,14 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EyeOff, Eye, ChevronLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function Register() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      router.replace("/profile/main-profile");
+    }
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,16 +37,15 @@ export default function Register() {
 
       const data = await res.json();
 
-      if (!res.ok) {
-        alert(data.message || "Login gagal");
+      if (!res.ok || !data.access_token) {
+        alert(data.message);
         return;
       }
 
-      // Simpan token kalau dikasih
-      localStorage.setItem("token", data.token);
+      Cookies.set("token", data.access_token);
 
-      alert("Login berhasil!");
-      window.location.href = "/profile/main-profile"; // atau ke halaman dashboard
+      alert(data.message);
+      window.location.href = "/profile/main-profile";
     } catch (err) {
       console.error(err);
       alert("Terjadi kesalahan saat login.");

@@ -1,5 +1,3 @@
-// app/api/login/route.ts
-
 export async function POST(req: Request) {
   const body = await req.json();
 
@@ -12,6 +10,7 @@ export async function POST(req: Request) {
   });
 
   const data = await res.json();
+  console.log('data', data)
 
   return new Response(JSON.stringify(data), {
     status: res.status,
