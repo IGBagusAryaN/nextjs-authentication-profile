@@ -3,17 +3,46 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
+import Cookies from "js-cookie";
 
 export default function AddInterest() {
   const router = useRouter();
   const [interestInput, setInterestInput] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
 
-  useEffect(() => {
-    // Ambil interest lama dari localStorage (kalau ada)
-    const stored = localStorage.getItem("interest");
-    if (stored) setInterests(JSON.parse(stored));
-  }, []);
+
+useEffect(() => {
+  const fetchInterests = async () => {
+    const token = Cookies.get("token");
+    if (!token) return;
+
+    try {
+      const res = await fetch("/api/get-profile", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": token,
+        },
+      });
+
+      const data = await res.json();
+      if (res.ok && Array.isArray(data.data?.interests)) {
+        const interestsFromApi = data.data.interests;
+        setInterests(interestsFromApi);
+        localStorage.setItem("interest", JSON.stringify(interestsFromApi));
+      } else {
+        const local = localStorage.getItem("interest");
+        if (local) setInterests(JSON.parse(local));
+      }
+    } catch (error) {
+      console.error("Gagal fetch interests:", error);
+      const local = localStorage.getItem("interest");
+      if (local) setInterests(JSON.parse(local));
+    }
+  };
+
+  fetchInterests();
+}, []);
 
   const addInterest = () => {
     if (interestInput.trim() && !interests.includes(interestInput.trim())) {

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { EyeOff, Eye, ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function Register() {
   const router = useRouter();
@@ -20,43 +21,44 @@ export default function Register() {
     }
   }, []);
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
 
-    if (password !== confirmPassword) {
-      alert("Password dan konfirmasi tidak sama");
-      return;
+const handleRegister = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (password !== confirmPassword) {
+    toast.error("Passwords do not match.");
+    return;
+  }
+
+  const registerPromise = fetch("/api/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      username,
+      password,
+    }),
+  }).then(async (res) => {
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Registration failed.");
     }
 
-    try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          username,
-          password,
-        }),
-      });
+    return data.message || "Registration successful.";
+  });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message);
-        return;
-      }
-      
-      localStorage.setItem("token", data.access_token);
-
-      alert(data.message);
+  toast.promise(registerPromise, {
+    loading: "Creating account...",
+    success: (msg) => {
       window.location.href = "/profile/create-profile";
-    } catch (err) {
-      console.error(err);
-      alert("Terjadi kesalahan saat registrasi.");
-    }
-  };
+      return msg;
+    },
+    error: (err) => err.message || "An error occurred during registration.",
+  });
+};
 
   return (
     <div className="min-h-screen bg-[radial-gradient(200%_200%_at_90%_10%,_#1F4247,_#0D1D23,_#09141A)]  text-white px-4 ">

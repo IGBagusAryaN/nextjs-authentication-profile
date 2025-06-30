@@ -1,19 +1,17 @@
 "use client";
 
+import { useProfileStore } from "@/app/stores/useProfile.store";
 import { Ellipsis, PencilLine } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import Cookies from "js-cookie";
 
 export default function MainProfile() {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  const { profile, fetchProfile, logout } = useProfileStore();
 
-  const handleLogout = () => {
-    Cookies.remove("token");
-    router.push("/auth/login");
-  };
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -28,79 +26,132 @@ export default function MainProfile() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
   return (
-    <div>
-      <div className="min-h-screen bg-[#0D1D23] text-white p-4 font-sans">
-        <div className="flex justify-between items-center gap-2 text-md text-white font-medium mb-4">
-          <span>@johndoe</span>
-          <div className="relative inline-block text-left" ref={dropdownRef}>
-            <button onClick={() => setOpen(!open)} className="p-2">
-              <Ellipsis />
-            </button>
+    <div className="min-h-screen bg-[#1A252A] text-white p-4 font-sans">
+      <div className="flex justify-between items-center gap-2 text-md text-white font-medium mb-4">
+        <span>@{profile.username}</span>
+        <div className="relative inline-block text-left" ref={dropdownRef}>
+          <button onClick={() => setOpen(!open)} className="p-2">
+            <Ellipsis />
+          </button>
 
-            {open && (
-              <div className="absolute right-0  w-36 rounded-md bg-[#1F2A30] shadow-lg ring-1 ring-black ring-opacity-5 z-50">
-                <button
-                  onClick={handleLogout}
-                  className="block w-full px-4 py-2 text-sm text-white hover:bg-red-600 rounded-md text-left"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
+          {open && (
+            <div className="absolute right-0 w-36 rounded-md bg-[#1F2A30] shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+              <button
+                onClick={logout}
+                className="block w-full px-4 py-2 text-sm text-white hover:bg-red-600 rounded-md text-left"
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
+      </div>
 
-        <div className="relative bg-[#1F2A30] rounded-xl mb-4 h-60 w-full overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#1F4247] to-[#0D1D23]">
-            <img
-              src="https://wallpapers.com/images/hd/naruto-landscape-1920-x-1080-7etx167z132c0vhm.jpg"
-              alt="bg"
-              className="w-full h-full object-cover opacity-40"
-            />
-          </div>
-
-          <a
-            href="/profile/detail-profile"
-            className="absolute top-3 right-3 text-gray-400 hover:text-white z-10"
-          >
-            <PencilLine />
-          </a>
-
-          <div className="absolute bottom-4 left-4 z-10">
-            <p className="text-white font-semibold text-lg">@johndoe123,</p>
-          </div>
+      <div className="relative bg-[#1F2A30] rounded-xl mb-4 h-60 w-full overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1F4247] to-[#0D1D23]">
+          <img
+            src={
+              profile.image ||
+              "https://www.shutterstock.com/shutterstock/videos/3777043173/thumb/1.jpg?ip=x480"
+            }
+            alt="bg"
+            className="w-full h-full object-cover opacity-40"
+          />
         </div>
+        <div className="absolute bottom-4 left-4 z-10">
+          <p className="text-white font-semibold text-lg">@{profile.name}</p>
+        </div>
+      </div>
 
-        <div className="bg-[#1F2A30] rounded-xl p-4 mb-4 relative">
-          <a
-            href="/profile/update-profile"
-            className="absolute top-4 right-4 text-gray-400 hover:text-white"
-          >
-            <PencilLine />
-          </a>
-          <div className="pl-[11px] pr-[41px]">
-            <p className="text-sm font-semibold mb-1">About</p>
+      <div className="bg-[#0D1D23] rounded-xl p-4 mb-4 relative">
+        <a
+          href={
+            profile.birthday &&
+            profile.horoscope &&
+            profile.zodiac &&
+            profile.height &&
+            profile.weight
+              ? "/profile/update-profile"
+              : "/profile/create-profile"
+          }
+          className="absolute top-4 right-4 text-gray-400 hover:text-white"
+        >
+          <PencilLine />
+        </a>
+        <div className="pl-[11px] pr-[41px]">
+          <p className="text-sm font-semibold mb-1">About</p>
+          {!profile.birthday &&
+          !profile.horoscope &&
+          !profile.zodiac &&
+          !profile.height &&
+          !profile.weight ? (
             <p className="text-gray-400 text-sm py-[23px]">
-              Add in your your to help others know you better
-              dadadadaddadadadadad
+              Add in your information to help others know you better.
             </p>
-          </div>
+          ) : (
+            <div className="text-sm space-y-1 mt-2">
+              {profile.birthday && (
+                <p>
+                  <span className="text-gray-500">Birthday:</span>{" "}
+                  <span className="text-white">{profile.birthday}</span>
+                </p>
+              )}
+              {profile.horoscope && (
+                <p>
+                  <span className="text-gray-500">Horoscope:</span>{" "}
+                  <span className="text-white">{profile.horoscope}</span>
+                </p>
+              )}
+              {profile.zodiac && (
+                <p>
+                  <span className="text-gray-500">Zodiac:</span>{" "}
+                  <span className="text-white">{profile.zodiac}</span>
+                </p>
+              )}
+              {profile.height && (
+                <p>
+                  <span className="text-gray-500">Height:</span>{" "}
+                  <span className="text-white">{profile.height}cm</span>
+                </p>
+              )}
+              {profile.weight && (
+                <p>
+                  <span className="text-gray-500">Weight:</span>{" "}
+                  <span className="text-white">{profile.weight}kg</span>
+                </p>
+              )}
+            </div>
+          )}
         </div>
+      </div>
 
-        <div className="bg-[#1F2A30] rounded-xl p-4 relative">
-          <a
-            href="/profile/interest-profile"
-            className="absolute top-4 right-4 text-gray-400 hover:text-white"
-          >
-            <PencilLine />
-          </a>
-          <div className="pl-[11px] pr-[41px]">
-            <p className="text-sm font-semibold mb-1">Interest</p>
-            <p className="text-gray-400 text-sm py-[23px]">
+      <div className="bg-[#0D1D23] rounded-xl p-4 relative">
+        <a
+          href="/profile/interest-profile"
+          className="absolute top-4 right-4 text-gray-400 hover:text-white"
+        >
+          <PencilLine />
+        </a>
+        <div className="pl-[11px] pr-[41px]">
+          <p className="text-sm font-semibold mb-1">Interest</p>
+          {profile.interests?.length === 0 ? (
+            <p className="text-gray-400 text-sm py-[13px]">
               Add in your interest to find a better match
             </p>
-          </div>
+          ) : (
+            <div className="flex flex-wrap gap-2 py-2">
+              {profile.interests.map((item, idx) => (
+                <span
+                  key={idx}
+                  className="bg-white bg-opacity-10 text-white px-3 py-1 rounded-md "
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
