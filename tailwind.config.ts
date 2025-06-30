@@ -1,22 +1,28 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-   theme: {
+  theme: {
     extend: {
       colors: {
-        primaryFrom: '#62CDCB',
-        primaryTo: '#4599DB',
+        "layout-primary": "#09141A",
+        "layout-secondary": "#0E191F",
+        "btn-choice": "#162329",
       },
       backgroundImage: {
-        'gradient-primary': 'linear-gradient(to right, #62CDCB, #4599DB)',
+        "gradient-primary": "linear-gradient(to right, #62CDCB, #4599DB)",
+        "gradient-primary-hover": "linear-gradient(to right, #3cb1ae, #2a6dbb)",
+        "radial-accent":
+          "radial-gradient(200% 200% at 90% 10%, #1F4247, #0D1D23, #09141A)",
+        "gradient-img-profile": "linear-gradient(to bottom right, #1F4247, #0D1D23)",
       },
     },
   },
   plugins: [],
-}
-export default config
+};
+
+export default config;

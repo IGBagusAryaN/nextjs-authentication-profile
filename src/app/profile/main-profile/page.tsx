@@ -28,7 +28,7 @@ export default function MainProfile() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#1A252A] text-white p-4 font-sans">
+    <div className="min-h-screen bg-layout-primary text-white p-4 font-sans">
       <div className="flex justify-between items-center gap-2 text-md text-white font-medium mb-4">
         <span>@{profile.username}</span>
         <div className="relative inline-block text-left" ref={dropdownRef}>
@@ -37,7 +37,7 @@ export default function MainProfile() {
           </button>
 
           {open && (
-            <div className="absolute right-0 w-36 rounded-md bg-[#1F2A30] shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+            <div className="absolute right-0 w-36 rounded-md bg-[#162329] shadow-lg ring-1 ring-black ring-opacity-5 z-50">
               <button
                 onClick={logout}
                 className="block w-full px-4 py-2 text-sm text-white hover:bg-red-600 rounded-md text-left"
@@ -49,12 +49,13 @@ export default function MainProfile() {
         </div>
       </div>
 
-      <div className="relative bg-[#1F2A30] rounded-xl mb-4 h-60 w-full overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1F4247] to-[#0D1D23]">
+      <div className="relative bg-layout-secondary rounded-xl mb-4 h-60 w-full overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-img-profile">
           <img
+            // image profile manual karena tidak ada api
             src={
               profile.image ||
-              "https://www.shutterstock.com/shutterstock/videos/3777043173/thumb/1.jpg?ip=x480"
+              "https://img.freepik.com/free-photo/anime-moon-landscape_23-2151645908.jpg?semt=ais_hybrid&w=740"
             }
             alt="bg"
             className="w-full h-full object-cover opacity-40"
@@ -62,10 +63,15 @@ export default function MainProfile() {
         </div>
         <div className="absolute bottom-4 left-4 z-10">
           <p className="text-white font-semibold text-lg">@{profile.name}</p>
+          <span className="text-sm">{profile.gender}</span>
+          <div className="flex gap-2 pt-2">
+            <div className="bg-[#1F241F] rounded-2xl px-3 py-2">{profile.horoscope}</div>
+            <div className="bg-[#1F241F] rounded-2xl px-3 py-2">{profile.zodiac}</div>
+          </div>
         </div>
       </div>
 
-      <div className="bg-[#0D1D23] rounded-xl p-4 mb-4 relative">
+      <div className="bg-layout-secondary rounded-xl p-4 mb-4 relative">
         <a
           href={
             profile.birthday &&
@@ -81,7 +87,7 @@ export default function MainProfile() {
           <PencilLine />
         </a>
         <div className="pl-[11px] pr-[41px]">
-          <p className="text-sm font-semibold mb-1">About</p>
+          <p className="text-lg font-semibold mb-1">About</p>
           {!profile.birthday &&
           !profile.horoscope &&
           !profile.zodiac &&
@@ -94,32 +100,32 @@ export default function MainProfile() {
             <div className="text-sm space-y-1 mt-2">
               {profile.birthday && (
                 <p>
-                  <span className="text-gray-500">Birthday:</span>{" "}
-                  <span className="text-white">{profile.birthday}</span>
+                  <span className="text-gray-500">Birthday: </span>
+                  <span className="text-white">{new Date(profile.birthday).toLocaleDateString("id-ID")}</span>
                 </p>
               )}
               {profile.horoscope && (
                 <p>
-                  <span className="text-gray-500">Horoscope:</span>{" "}
+                  <span className="text-gray-500">Horoscope: </span>
                   <span className="text-white">{profile.horoscope}</span>
                 </p>
               )}
               {profile.zodiac && (
                 <p>
-                  <span className="text-gray-500">Zodiac:</span>{" "}
+                  <span className="text-gray-500">Zodiac: </span>
                   <span className="text-white">{profile.zodiac}</span>
                 </p>
               )}
               {profile.height && (
                 <p>
-                  <span className="text-gray-500">Height:</span>{" "}
-                  <span className="text-white">{profile.height}cm</span>
+                  <span className="text-gray-500">Height: </span>
+                  <span className="text-white">{profile.height} cm</span>
                 </p>
               )}
               {profile.weight && (
                 <p>
-                  <span className="text-gray-500">Weight:</span>{" "}
-                  <span className="text-white">{profile.weight}kg</span>
+                  <span className="text-gray-500">Weight: </span>
+                  <span className="text-white">{profile.weight} kg</span>
                 </p>
               )}
             </div>
@@ -127,7 +133,7 @@ export default function MainProfile() {
         </div>
       </div>
 
-      <div className="bg-[#0D1D23] rounded-xl p-4 relative">
+      <div className="bg-layout-secondary rounded-xl p-4 relative">
         <a
           href="/profile/interest-profile"
           className="absolute top-4 right-4 text-gray-400 hover:text-white"
@@ -135,7 +141,7 @@ export default function MainProfile() {
           <PencilLine />
         </a>
         <div className="pl-[11px] pr-[41px]">
-          <p className="text-sm font-semibold mb-1">Interest</p>
+          <p className="text-lg font-semibold mb-1">Interest</p>
           {profile.interests?.length === 0 ? (
             <p className="text-gray-400 text-sm py-[13px]">
               Add in your interest to find a better match

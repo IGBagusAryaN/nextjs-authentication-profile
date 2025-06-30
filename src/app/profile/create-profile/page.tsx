@@ -7,6 +7,9 @@ import toast from "react-hot-toast";
 import { useZodiacStore } from "@/app/stores/useZodiac.store";
 import { ChevronRight, PencilLine } from "lucide-react";
 import { useProfileStore } from "@/app/stores/useProfile.store";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 export default function CreateProfile() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -19,7 +22,6 @@ export default function CreateProfile() {
   const [interest, setInterest] = useState<string[]>([]);
 
   const { birthday, horoscope, zodiac, setBirthday } = useZodiacStore();
-
   const { profile, fetchProfile } = useProfileStore();
 
   useEffect(() => {
@@ -163,7 +165,7 @@ export default function CreateProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A252A] text-white p-4 font-sans">
+    <div className="min-h-screen bg-layout-primary text-white p-4 font-sans">
       <div className="flex justify-between items-center mb-4 text-md font-medium">
         <span>@{profile.username}</span>
         <a href="/profile/main-profile" className="flex items-center text-sm">
@@ -171,10 +173,10 @@ export default function CreateProfile() {
         </a>
       </div>
 
-      <div className="relative h-48 mb-4 w-full bg-[#1F2A30] rounded-xl overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1F4247] to-[#1A252A]">
+      <div className="relative h-48 mb-4 w-full bg-layout-secondary rounded-xl overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-img-profile">
           <img
-            src="https://www.shutterstock.com/shutterstock/videos/3777043173/thumb/1.jpg?ip=x480"
+            src="https://img.freepik.com/free-photo/anime-moon-landscape_23-2151645908.jpg?semt=ais_hybrid&w=740"
             alt="Profile"
             className="w-full h-full object-cover opacity-40"
           />
@@ -183,7 +185,7 @@ export default function CreateProfile() {
 
       <form
         onSubmit={handleSubmit}
-        className="bg-[#0E191F] rounded-xl px-6 py-4 space-y-4 mb-6"
+        className="bg-layout-secondary rounded-xl px-6 py-4 space-y-4 mb-6"
       >
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-sm">About</h2>
@@ -222,33 +224,38 @@ export default function CreateProfile() {
           />
         </div>
 
-        {[
-          { label: "Display name", value: name, set: setName },
-          {
-            label: "Birthday",
-            value: birthday,
-            set: setBirthday,
-            type: "date",
-          },
-        ].map(({ label, value, set, type = "text" }, i) => (
-          <div className="flex items-center" key={i}>
-            <label className="text-xs text-gray-400 w-[50%]">{label}:</label>
-            <input
-              type={type}
-              value={value}
-              onChange={(e) => {
-                if (set) set(e.target.value);
+        <div className="flex items-center">
+          <label className="text-xs text-gray-400 w-[50%]">Display name:</label>
+          <input
+            type="text"
+            value={name}
+            placeholder="your name"
+            onChange={(e) => setName(e.target.value)}
+            className="w-full text-end mt-1 px-3 py-2 rounded-md bg-[#1A252A] border border-gray-700 text-sm"
+          />
+        </div>
+
+        <div className="flex items-center">
+          <label className="text-xs text-gray-400 w-[50%]">Birthday:</label>
+          <div className="w-full -ml-1">
+            <DatePicker
+              selected={birthday ? new Date(birthday) : null}
+              onChange={(date) => {
+                if (date) setBirthday(date.toISOString());
               }}
-              className="w-full text-end mt-1 px-3 py-2 rounded-md bg-[#1A252A] border border-gray-700 text-sm"
+              dateFormat="dd/MM/yyyy"
+              placeholderText="dd/mm/yyyy"
+              className="w-[274px] text-end mt-1 px-3 py-2 rounded-md bg-[#1A252A] border border-gray-700 text-sm text-white"
             />
           </div>
-        ))}
+        </div>
 
         <div className="flex items-center">
           <label className="text-xs text-gray-400 w-[50%]">Horoscope:</label>
           <input
             type="text"
             value={horoscope}
+            placeholder="auto-filled"
             readOnly
             className="w-full text-end mt-1 px-3 py-2 rounded-md bg-[#1A252A] border border-gray-700 text-sm"
           />
@@ -259,6 +266,7 @@ export default function CreateProfile() {
           <input
             type="text"
             value={zodiac}
+            placeholder="auto-filled"
             readOnly
             className="w-full text-end mt-1 px-3 py-2 rounded-md bg-[#1A252A] border border-gray-700 text-sm"
           />
@@ -296,7 +304,7 @@ export default function CreateProfile() {
         ))}
       </form>
 
-      <div className="bg-[#0E191F] rounded-xl px-[23px] py-4 relative">
+      <div className="bg-layout-secondary rounded-xl px-[23px] py-4 relative">
         <button
           className="absolute top-5 right-5 text-gray-400 hover:text-white"
           onClick={() => router.push("/profile/interest-profile")}
@@ -313,7 +321,7 @@ export default function CreateProfile() {
             {interest.map((item, idx) => (
               <span
                 key={idx}
-                className="bg-white bg-opacity-10 text-white px-3 py-1 rounded-md "
+                className="bg-white bg-opacity-10 text-white px-3 py-1 rounded-md"
               >
                 {item}
               </span>

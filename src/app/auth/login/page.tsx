@@ -10,20 +10,15 @@ export default function Register() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      router.replace("/profile/main-profile");
-    }
-  }, []);
+  //trigger username karena require
+  const [username] = useState("");
 
   useEffect(() => {
     const logoutSuccess = localStorage.getItem("logoutSuccess");
     if (logoutSuccess) {
-      toast.success("Logout berhasil 👋");
+      toast.success("Logout berhasil👋");
       localStorage.removeItem("logoutSuccess");
     }
   }, []);
@@ -44,11 +39,11 @@ export default function Register() {
     }).then(async (res) => {
       const data = await res.json();
       if (!res.ok || !data.access_token) {
-        throw new Error(data.message || "Login failed.");
+        throw new Error(data.message);
       }
 
       Cookies.set("token", data.access_token);
-      return data.message || "Login successful.";
+      return data.message;
     });
 
     toast.promise(loginPromise, {
@@ -57,35 +52,33 @@ export default function Register() {
         router.push("/profile/main-profile");
         return msg;
       },
-      error: (err) => err.message || "An error occurred during login.",
+      error: (err) => err.message,
     });
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(200%_200%_at_90%_10%,_#1F4247,_#0D1D23,_#09141A)]  text-white px-4 ">
-      <button className="text-left text-sm text-white flex items-center gap-1 -ml-1 pt-10 pb-20">
-        <span>
-          <ChevronLeft />
-        </span>{" "}
-        Back
-      </button>
+    <div className="min-h-screen bg-radial-accent text-white px-4 ">
+      <div className="pt-10 mb-20">
+        <a
+          href="/auth/register"
+          className="text-left text-sm text-white flex items-center gap-1 -ml-1 "
+        >
+          <span>
+            <ChevronLeft />
+          </span>
+          Back
+        </a>
+      </div>
       <div className="w-full max-w-md space-y-6">
         <h1 className="text-3xl font-bold ml-4">Login</h1>
 
         <form className="space-y-4" onSubmit={handleLogin}>
-          {/* <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Enter Username"
-            className="w-full  px-5 py-4 rounded-[9px] bg-white bg-opacity-5 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          /> */}
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter Email"
-            className="w-full  px-5 py-4 rounded-[9px] bg-white bg-opacity-5 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full  px-5 py-4 rounded-[9px] bg-white bg-opacity-5 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
           />
           <div className="relative">
             <input
@@ -93,7 +86,7 @@ export default function Register() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Create Password"
-              className="w-full  px-5 py-4 rounded-[9px] bg-white bg-opacity-5 text-white placeholder-gray-400 pr-10"
+              className="w-full  px-5 py-4 rounded-[9px] bg-white bg-opacity-5 text-white placeholder-gray-400 pr-10 focus:outline-none focus:ring-2 focus:ring-sky-500"
             />
             <button
               type="button"
@@ -106,7 +99,7 @@ export default function Register() {
 
           <button
             type="submit"
-            className="w-full p-3 bg-gradient-to-r from-primaryFrom to-primaryTo rounded-[9px] text-white font-semibold"
+            className="w-full p-3 bg-gradient-primary rounded-[9px] text-white font-semibold hover:bg-gradient-primary-hover"
           >
             Login
           </button>

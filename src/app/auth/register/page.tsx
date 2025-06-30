@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { EyeOff, Eye, ChevronLeft } from "lucide-react";
+import { EyeOff, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
@@ -13,52 +13,47 @@ export default function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      router.replace("/profile/create-profile");
-    }
-  }, []);
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-
-const handleRegister = async (e: React.FormEvent) => {
-  e.preventDefault();
-
-  if (password !== confirmPassword) {
-    toast.error("Passwords do not match.");
-    return;
-  }
-
-  const registerPromise = fetch("/api/register", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email,
-      username,
-      password,
-    }),
-  }).then(async (res) => {
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || "Registration failed.");
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
     }
 
-    return data.message || "Registration successful.";
-  });
+    setIsLoading(true);
 
-  toast.promise(registerPromise, {
-    loading: "Creating account...",
-    success: (msg) => {
+
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          username,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
+
+      toast.success(data.message || "Account created successfully!");
       window.location.href = "/profile/create-profile";
-      return msg;
-    },
-    error: (err) => err.message || "An error occurred during registration.",
-  });
-};
+    } catch (err) {
+      const error = err as Error;
+      toast.error(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[radial-gradient(200%_200%_at_90%_10%,_#1F4247,_#0D1D23,_#09141A)]  text-white px-4 ">
@@ -71,14 +66,14 @@ const handleRegister = async (e: React.FormEvent) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter Email"
-            className="w-full  px-5 py-4 rounded-[9px] bg-white bg-opacity-5 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full  px-5 py-4 rounded-[9px] bg-white bg-opacity-5 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
           />
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Create Username"
-            className="w-full  px-5 py-4 rounded-[9px] bg-white bg-opacity-5 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full  px-5 py-4 rounded-[9px] bg-white bg-opacity-5 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
           />
 
           <div className="relative">
@@ -87,7 +82,7 @@ const handleRegister = async (e: React.FormEvent) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Create Password"
-              className="w-full  px-5 py-4 rounded-[9px] bg-white bg-opacity-5 text-white placeholder-gray-400 pr-10"
+              className="w-full  px-5 py-4 rounded-[9px] bg-white bg-opacity-5 text-white placeholder-gray-400 pr-10 focus:outline-none focus:ring-2 focus:ring-sky-500"
             />
             <button
               type="button"
@@ -104,7 +99,7 @@ const handleRegister = async (e: React.FormEvent) => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm Password"
-              className="w-full px-5 py-4 rounded-[9px] bg-white bg-opacity-5 text-white placeholder-gray-400 pr-10"
+              className="w-full px-5 py-4 rounded-[9px] bg-white bg-opacity-5 text-white placeholder-gray-400 pr-10 focus:outline-none focus:ring-2 focus:ring-sky-500"
             />
             <button
               type="button"
@@ -117,7 +112,7 @@ const handleRegister = async (e: React.FormEvent) => {
 
           <button
             type="submit"
-            className="w-full p-3 bg-gradient-to-r from-primaryFrom to-primaryTo rounded-[9px] text-white font-semibold"
+            className="w-full p-3 bg-gradient-primary rounded-[9px] text-white font-semibold hover:bg-gradient-primary-hover"
           >
             Register
           </button>
