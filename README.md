@@ -4,14 +4,13 @@ A profile management app built using **Next.js**, allowing users to create, upda
 
 ## ✨ Features
 
-- 👤 **Profile creation** with name, gender, birthday, height, weight, and profile image
+- 👤 **Profile creation** with name, gender, birthday, height, weight
 - 🌌 **Auto-generated Horoscope and Zodiac** from birthday
 - 🧠 **State Management** using Zustand
 - 🗂️ **Dynamic Interest Management**
   - Add/remove multiple interests
   - Temporarily stored in `localStorage`
 - 💾 **Auto-routing** based on profile status
-- 📸 Image preview and upload
 - 🧑‍🎨 Tailwind CSS for modern design
 
 ---
