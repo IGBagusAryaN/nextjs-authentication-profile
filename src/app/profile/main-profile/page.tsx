@@ -1,12 +1,14 @@
 "use client";
 
 import { useProfileStore } from "@/app/stores/useProfile.store";
-import { Ellipsis, PencilLine } from "lucide-react";
+import { Ellipsis, Flame, PencilLine, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function MainProfile() {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const { profile, fetchProfile, logout } = useProfileStore();
 
   useEffect(() => {
@@ -26,6 +28,17 @@ export default function MainProfile() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleEditClick = () => {
+    const { birthday, horoscope, zodiac, height, weight } = profile;
+
+    const isProfileComplete =
+      birthday && horoscope && zodiac && height && weight;
+
+    router.push(
+      isProfileComplete ? "/profile/update-profile" : "/profile/create-profile"
+    );
+  };
 
   return (
     <div className="min-h-screen bg-layout-primary text-white p-4 font-sans">
@@ -65,27 +78,25 @@ export default function MainProfile() {
           <p className="text-white font-semibold text-lg">@{profile.name}</p>
           <span className="text-sm">{profile.gender}</span>
           <div className="flex gap-2 pt-2">
-            <div className="bg-[#1F241F] rounded-2xl px-3 py-2">{profile.horoscope}</div>
-            <div className="bg-[#1F241F] rounded-2xl px-3 py-2">{profile.zodiac}</div>
+            <div className="bg-[#1F241F] rounded-2xl px-3 py-2 flex items-center gap-2">
+              <Star />
+              {profile.horoscope}
+            </div>
+            <div className="bg-[#1F241F] rounded-2xl px-3 py-2 flex items-center gap-2">
+              <Flame />
+              {profile.zodiac}
+            </div>
           </div>
         </div>
       </div>
 
       <div className="bg-layout-secondary rounded-xl p-4 mb-4 relative">
-        <a
-          href={
-            profile.birthday &&
-            profile.horoscope &&
-            profile.zodiac &&
-            profile.height &&
-            profile.weight
-              ? "/profile/update-profile"
-              : "/profile/create-profile"
-          }
+        <button
+          onClick={handleEditClick}
           className="absolute top-4 right-4 text-gray-400 hover:text-white"
         >
           <PencilLine />
-        </a>
+        </button>
         <div className="pl-[11px] pr-[41px]">
           <p className="text-lg font-semibold mb-1">About</p>
           {!profile.birthday &&
@@ -101,7 +112,9 @@ export default function MainProfile() {
               {profile.birthday && (
                 <p>
                   <span className="text-gray-500">Birthday: </span>
-                  <span className="text-white">{new Date(profile.birthday).toLocaleDateString("id-ID")}</span>
+                  <span className="text-white">
+                    {new Date(profile.birthday).toLocaleDateString("id-ID")}
+                  </span>
                 </p>
               )}
               {profile.horoscope && (
@@ -134,12 +147,12 @@ export default function MainProfile() {
       </div>
 
       <div className="bg-layout-secondary rounded-xl p-4 relative">
-        <a
-          href="/profile/interest-profile"
+        <button
           className="absolute top-4 right-4 text-gray-400 hover:text-white"
+          onClick={() => router.push("/profile/interest-profile")}
         >
           <PencilLine />
-        </a>
+        </button>
         <div className="pl-[11px] pr-[41px]">
           <p className="text-lg font-semibold mb-1">Interest</p>
           {profile.interests?.length === 0 ? (

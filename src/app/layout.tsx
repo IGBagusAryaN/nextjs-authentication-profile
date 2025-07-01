@@ -23,26 +23,26 @@ export default function RootLayout({
           reverseOrder={false}
           toastOptions={{
             style: {
-              background: "#1F2A30", 
+              background: "#162329",
               color: "#fff",
-              border: "1px solid #333",
             },
             success: {
               iconTheme: {
-                primary: "#4ade80", 
-                secondary: "#1F2A30",
+                primary: "#4ade80",
+                secondary: "#162329",
               },
             },
             error: {
               iconTheme: {
-                primary: "#f87171", 
-                secondary: "#1F2A30",
+                primary: "#f87171",
+                secondary: "#162329",
               },
             },
           }}
         />
-
-        {children}
+        <div className="w-full flex justify-center">
+          <div className="w-full md:w-[32%]">{children}</div>
+        </div>
       </body>
     </html>
   );
