@@ -1,6 +1,6 @@
 # 👨‍💻 Next.js Profile App
 
-A profile management app built using **Next.js**, allowing users to create, update, and manage their personal profiles with interests and image upload support.
+A profile management app built using **Next.js**, allowing users to create, update, and manage their personal profiles with interests.
 
 ## ✨ Features
 
