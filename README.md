@@ -55,4 +55,4 @@ A profile management app built using **Next.js**, allowing users to create, upda
 
 ```bash
 npm install
-npm dev
+npm run dev
