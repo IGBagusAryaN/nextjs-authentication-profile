@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 👨‍💻 Next.js Profile App
 
-## Getting Started
+A profile management app built using **Next.js**, allowing users to create, update, and manage their personal profiles with interests and image upload support.
 
-First, run the development server:
+## ✨ Features
+
+- 👤 **Profile creation** with name, gender, birthday, height, weight, and profile image
+- 🌌 **Auto-generated Horoscope and Zodiac** from birthday
+- 🧠 **State Management** using Zustand
+- 🗂️ **Dynamic Interest Management**
+  - Add/remove multiple interests
+  - Temporarily stored in `localStorage`
+- 💾 **Auto-routing** based on profile status
+- 📸 Image preview and upload
+- 🧑‍🎨 Tailwind CSS for modern design
+
+---
+
+## 🔄 User Flow
+
+1. **Authentication**
+   - Users must authenticate first (via JWT stored in cookies).
+   - After login, users are redirected to `/profile/main-profile`.
+
+2. **Profile Existence Check**
+   - If profile is not yet created, user is redirected to `/profile/create-profile`.
+
+3. **Create Profile**
+   - Users fill out profile details.
+   - Horoscope and Zodiac are auto-filled based on birthday.
+   - On submit, profile is saved to the backend.
+
+4. **Manage Interests**
+   - User can visit `/profile/interest-profile` to add/remove interests.
+   - Interests are stored in `localStorage` until saved.
+   - When saved, user is redirected to:
+     - `/profile/create-profile` if profile was incomplete, or
+     - `/profile/update-profile` if profile already existed.
+
+5. **Update Profile**
+   - User can modify all fields.
+   - Interest data from `localStorage` is merged and saved to backend via `PUT /api/update-profile`.
+   - On success, `localStorage` is cleared and user is redirected to `/profile/main-profile`.
+
+---
+
+## 🛠 Tech Stack
+
+- [Next.js](https://nextjs.org/)
+- [Zustand](https://github.com/pmndrs/zustand)
+- [Tailwind CSS](https://tailwindcss.com/)
+---
+
+
+## 🚀 Getting Started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+npm install
+npm dev
