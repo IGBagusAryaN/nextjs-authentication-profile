@@ -1,11 +1,27 @@
+import { useEffect, useState } from "react";
+import { PencilLine } from "lucide-react";
+
 type Props = {
-  interests: string[];
   onEditClick: () => void;
 };
 
-import { PencilLine } from "lucide-react";
+export default function InterestDisplay({ onEditClick }: Props) {
+  const [interests, setInterests] = useState<string[]>([]);
 
-export default function InterestDisplay({ interests, onEditClick }: Props) {
+  useEffect(() => {
+    const stored = localStorage.getItem("interests");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setInterests(parsed);
+        }
+      } catch (error) {
+        console.error("Failed to parse interests from localStorage:", error);
+      }
+    }
+  }, []);
+
   return (
     <div className="bg-layout-secondary rounded-xl px-[23px] py-4 relative">
       <button

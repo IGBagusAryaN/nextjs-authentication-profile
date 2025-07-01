@@ -12,7 +12,7 @@ const config: Config = {
         "layout-primary": "#09141A",
         "layout-secondary": "#0E191F",
         "btn-choice": "#162329",
-           "input-primary": "#1A252A",
+        "input-primary": "#1A252A",
       },
       backgroundImage: {
         "gradient-primary": "linear-gradient(to right, #62CDCB, #4599DB)",
@@ -22,6 +22,10 @@ const config: Config = {
         "gradient-img-profile":
           "linear-gradient(to bottom right, #1F4247, #0D1D23)",
         "gradient-gold": "linear-gradient(to right, #94783E, #F3EDA6, #D5BE88)",
+        "gradient-gold-complex":
+          "linear-gradient(to right, #94783E, #F3EDA6, #F8FAE5, #FFE2BE, #D5BE88)",
+        "gradient-savebtn":
+          "linear-gradient(to right, #ABFFFD, #AADAFF, #4599DB)",
       },
     },
   },

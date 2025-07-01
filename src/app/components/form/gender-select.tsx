@@ -18,13 +18,13 @@ export default function GenderSelect({ value, onChange }: Props) {
       options={genderOptions}
       value={genderOptions.find((opt) => opt.value === value)}
       onChange={(opt) => onChange(opt?.value || "")}
-      placeholder="Select gender"
+      placeholder="select gender"
       styles={{
         control: (base, state) => ({
           ...base,
           backgroundColor: "#1A252A",
           borderColor: state.isFocused ? "#3B82F6" : "#374151",
-          padding: "2px 4px",
+          padding: "1px 4px",
           color: "white",
           borderRadius: "6px",
           minHeight: "42px",
@@ -33,11 +33,15 @@ export default function GenderSelect({ value, onChange }: Props) {
         singleValue: (base) => ({
           ...base,
           color: "white",
+          fontSize: "14px",
+          lineHeight: "16px",
           marginRight: "-7px",
         }),
         placeholder: (base) => ({
           ...base,
           color: "#9CA3AF",
+          fontSize: "14px",
+          lineHeight: "16px",
           marginRight: "-7px",
         }),
         indicatorSeparator: () => ({ display: "none" }),
@@ -58,6 +62,8 @@ export default function GenderSelect({ value, onChange }: Props) {
           ...base,
           backgroundColor: state.isFocused ? "#2563EB" : "#1A252A",
           color: "white",
+          fontSize: "14px",
+          lineHeight: "16px",
           padding: 10,
           cursor: "pointer",
         }),

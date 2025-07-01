@@ -3,50 +3,37 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
-import Cookies from "js-cookie";
+import { useProfileStore } from "@/app/stores/useProfile.store";
+import toast from "react-hot-toast";
 
 export default function AddInterest() {
   const router = useRouter();
   const [interestInput, setInterestInput] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
+  const { profile, fetchProfile } = useProfileStore();
 
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
 
-useEffect(() => {
-  const fetchInterests = async () => {
-    const token = Cookies.get("token");
-    if (!token) return;
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
 
-    try {
-      const res = await fetch("/api/get-profile", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "x-access-token": token,
-        },
-      });
+  useEffect(() => {
+    const local = localStorage.getItem("interest");
 
-      const data = await res.json();
-      if (res.ok && Array.isArray(data.data?.interests)) {
-        const interestsFromApi = data.data.interests;
-        setInterests(interestsFromApi);
-        localStorage.setItem("interest", JSON.stringify(interestsFromApi));
-      } else {
-        const local = localStorage.getItem("interest");
-        if (local) setInterests(JSON.parse(local));
-      }
-    } catch (error) {
-      console.error("Gagal fetch interests:", error);
-      const local = localStorage.getItem("interest");
-      if (local) setInterests(JSON.parse(local));
+    if (local) {
+      setInterests(JSON.parse(local));
+    } else if (profile && Array.isArray(profile.interests)) {
+      setInterests(profile.interests);
     }
-  };
-
-  fetchInterests();
-}, []);
+  }, [profile]);
 
   const addInterest = () => {
-    if (interestInput.trim() && !interests.includes(interestInput.trim())) {
-      setInterests([...interests, interestInput.trim()]);
+    const trimmed = interestInput.trim();
+    if (trimmed && !interests.includes(trimmed)) {
+      setInterests([...interests, trimmed]);
       setInterestInput("");
     }
   };
@@ -57,7 +44,24 @@ useEffect(() => {
 
   const handleSave = () => {
     localStorage.setItem("interest", JSON.stringify(interests));
-    router.push("/profile/create-profile"); // Balik ke halaman create profile
+    const isComplete =
+      profile?.name &&
+      profile?.gender &&
+      profile?.birthday &&
+      profile?.horoscope &&
+      profile?.zodiac &&
+      profile?.height &&
+      profile?.weight;
+
+    toast.success(
+      isComplete
+        ? "Interest updated! Redirecting to Update Profile..."
+        : "Interest saved! Let's complete your profile."
+    );
+
+    router.push(
+      isComplete ? "/profile/update-profile" : "/profile/create-profile"
+    );
   };
 
   return (
@@ -67,26 +71,25 @@ useEffect(() => {
           href="/profile/create-profile"
           className="text-left text-sm text-white flex items-center"
         >
-          <span>
-            <ChevronLeft />
-          </span>
+          <ChevronLeft />
           Back
         </a>
 
         <button
           onClick={handleSave}
-          className="text-transparent bg-clip-text bg-gradient-to-r from-[#ABFFFD] via-[#AADAFF] to-[#4599DB] font-semibold"
+          className="text-transparent bg-clip-text bg-gradient-savebtn font-semibold"
         >
           Save
         </button>
       </div>
 
       <div className="pt-20 pb-5 px-3 flex flex-col">
-        <span className="text-xl font-bold bg-gradient-to-r from-[#94783E] via-[#F3EDA6] via-[#F8FAE5] via-[#FFE2BE] to-[#D5BE88] bg-clip-text text-transparent">Tell everyone about yourself</span>
+        <span className="text-xl font-bold bg-gradient-gold-complex bg-clip-text text-transparent">
+          Tell everyone about yourself
+        </span>
         <span className="font-semibold text-3xl">What interest you?</span>
       </div>
-
-      <div className="flex flex-wrap items-center gap-2 mx-3 px-[17px] py-2 bg-[#1A252A] border border-gray-600 rounded-2xl text-white min-h-[3rem] mb-6">
+      <div className="flex flex-wrap items-center gap-2 mx-3 px-[17px] py-2 bg-input-primary border border-gray-600 rounded-2xl text-white min-h-[3rem] mb-6">
         {interests.map((item, index) => (
           <div
             key={index}

@@ -78,11 +78,11 @@ export default function MainProfile() {
           <p className="text-white font-semibold text-lg">@{profile.name}</p>
           <span className="text-sm">{profile.gender}</span>
           <div className="flex gap-2 pt-2">
-            <div className="bg-[#1F241F] rounded-2xl px-3 py-2 flex items-center gap-2">
+            <div className="bg-btn-choice rounded-2xl px-3 py-2 flex items-center gap-2">
               <Star />
               {profile.horoscope}
             </div>
-            <div className="bg-[#1F241F] rounded-2xl px-3 py-2 flex items-center gap-2">
+            <div className="bg-btn-choice rounded-2xl px-3 py-2 flex items-center gap-2">
               <Flame />
               {profile.zodiac}
             </div>
@@ -147,12 +147,6 @@ export default function MainProfile() {
       </div>
 
       <div className="bg-layout-secondary rounded-xl p-4 relative">
-        <button
-          className="absolute top-4 right-4 text-gray-400 hover:text-white"
-          onClick={() => router.push("/profile/interest-profile")}
-        >
-          <PencilLine />
-        </button>
         <div className="pl-[11px] pr-[41px]">
           <p className="text-lg font-semibold mb-1">Interest</p>
           {profile.interests?.length === 0 ? (

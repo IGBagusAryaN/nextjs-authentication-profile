@@ -10,13 +10,15 @@ import { useProfileStore } from "@/app/stores/useProfile.store";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Select from "react-select";
-import ProfileImageUpload from "@/app/components/create-profile/file-input";
-import GenderSelect from "@/app/components/create-profile/gender-select";
-import LabeledInput from "@/app/components/create-profile/label-input";
-import InterestDisplay from "@/app/components/create-profile/interest-input";
+import ProfileImageUpload from "@/app/components/form/file-input";
+import GenderSelect from "@/app/components/form/gender-select";
+import LabeledInput from "@/app/components/form/label-input";
+import InterestDisplay from "@/app/components/form/interest-input";
 
 export default function CreateProfile() {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const [image, setImage] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
@@ -30,6 +32,7 @@ export default function CreateProfile() {
   useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
+
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -87,6 +90,21 @@ export default function CreateProfile() {
     });
   };
 
+  useEffect(() => {
+  const stored = localStorage.getItem("interest");
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed)) {
+        setInterest(parsed);
+      }
+    } catch (err) {
+      console.error("Failed to parse interests:", err);
+    }
+  }
+}, []);
+
+
   return (
     <div className="min-h-screen bg-layout-primary text-white p-4 font-sans">
       <div className="flex justify-between items-center mb-4 text-md font-medium">
@@ -139,7 +157,7 @@ export default function CreateProfile() {
               }}
               dateFormat="dd/MM/yyyy"
               placeholderText="dd/mm/yyyy"
-              className="w-[271px] text-end mt-1 px-3 py-2 rounded-md bg-input-primary border border-gray-700 text-sm text-white"
+              className="w-[227px] md:w-[271px] text-end mt-1 px-3 py-2 rounded-md bg-input-primary border border-gray-700 text-sm text-white"
             />
           </div>
         </div>
@@ -162,30 +180,41 @@ export default function CreateProfile() {
 
         <div className="flex items-center">
           <label className="text-xs text-gray-400 w-[50%]">Gender:</label>
-          <div className="w-full text-end">
+          <div className="w-[420px] md:w-full text-end">
             {/* custom select dropdown */}
             <GenderSelect value={gender} onChange={setGender} />
           </div>
         </div>
 
-        <LabeledInput
-          placeholder="e.g 170"
-          label="Height"
-          value={height}
-          onChange={setHeight}
-        />
-        <LabeledInput
-          placeholder="e.g 70"
-          label="Weight"
-          value={weight}
-          onChange={setWeight}
-        />
+        <LabeledInput placeholder="e.g 170" label="Height" value={height} onChange={setHeight} />
+        <LabeledInput placeholder="e.g 70" label="Weight" value={weight} onChange={setWeight} />
       </form>
 
-      <InterestDisplay
-        interests={interest}
-        onEditClick={() => router.push("/profile/interest-profile")}
-      />
+      <div className="bg-layout-secondary rounded-xl px-[23px] py-4 relative">
+        <button
+          className="absolute top-5 right-5 text-gray-400 hover:text-white"
+          onClick={() => router.push("/profile/interest-profile")}
+        >
+          <PencilLine />
+        </button>
+        <p className="text-sm font-semibold mb-1">Interest</p>
+        {interest.length === 0 ? (
+          <p className="text-gray-400 text-sm py-[13px]">
+            Add in your interest to find a better match
+          </p>
+        ) : (
+          <div className="flex flex-wrap gap-2 py-2">
+            {interest.map((item, idx) => (
+              <span
+                key={idx}
+                className="bg-white bg-opacity-10 text-white px-3 py-1 rounded-md"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
