@@ -14,11 +14,10 @@ import GenderSelect from "@/app/components/form/gender-select";
 
 export default function UpdateProfile() {
   const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [image, setImage] = useState<string | null>(null);
   const [name, setName] = useState("");
-  const [gender, setGender] = useState("Male");
+  const [gender, setGender] = useState("");
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
   const [interest, setInterest] = useState<string[]>([]);
@@ -38,16 +37,14 @@ export default function UpdateProfile() {
       setWeight(profile.weight ? String(profile.weight) : "");
       setImage(profile.image || null);
 
-      // cek localStorage interest (dari interest-profile)
       const localInterest = localStorage.getItem("interest");
       if (localInterest) {
         try {
           const parsed = JSON.parse(localInterest);
           if (Array.isArray(parsed)) {
-            setInterest(parsed); // pakai yang local
+            setInterest(parsed); 
           }
         } catch {
-          // fallback ke interest dari profile jika parsing gagal
           setInterest(
             Array.isArray(profile.interests) ? profile.interests : []
           );

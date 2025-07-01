@@ -1,4 +1,3 @@
-// Data tahun baru Imlek dari 1900–2100 (format: YYYY-MM-DD)
 const chineseNewYearDates: Record<number, string> = {
   1900: "1900-01-31",
   1901: "1901-02-19",

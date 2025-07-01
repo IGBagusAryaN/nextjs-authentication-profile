@@ -1,4 +1,3 @@
-// components/GenderSelect.tsx
 import Select from "react-select";
 
 const genderOptions = [
